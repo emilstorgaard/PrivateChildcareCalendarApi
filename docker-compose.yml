@@ -5,7 +5,7 @@ services:
     container_name: private-childcare-calendar-api
     build:
       context: .
-      dockerfile: ./Dockerfiule
+      dockerfile: ./Dockerfile
     ports:
       - '8083:8080'
     restart: unless-stopped
