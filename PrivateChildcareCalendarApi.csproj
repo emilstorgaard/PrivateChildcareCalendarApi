@@ -10,14 +10,6 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-	  <Content Remove="appsettings.Production.json" />
-	</ItemGroup>
-
-	<ItemGroup>
-	  <Compile Include="appsettings.Production.json" />
-	</ItemGroup>
-
-	<ItemGroup>
 		<PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="10.0.9" />
 		<PackageReference Include="Microsoft.Data.Sqlite" Version="10.0.9" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="10.0.9" />
