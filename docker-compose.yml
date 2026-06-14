@@ -10,7 +10,7 @@ services:
       - '8083:8080'
     restart: unless-stopped
     volumes:
-      - ./privatpasning.db:/app/database.db
-      - ./backups:/app/backups
+      - ./Database:/app/database
+      - ./Backups:/app/backups
     environment:
       - ASPNETCORE_ENVIRONMENT=Production
