@@ -13,8 +13,6 @@ namespace PrivateChildcareCalendarApi;
 
 public class Program
 {
-    private const string CorsPolicy = "SvelteKit";
-
     public static void Main(string[] args)
     {
         var builder = WebApplication.CreateBuilder(args);
@@ -86,9 +84,9 @@ public class Program
         }
 
         app.UseHsts();
+        app.UseCors("AllowAllOrigins");
         app.UseHttpsRedirection();
         app.UseRouting();
-        app.UseCors("AllowAllOrigins");
         app.UseMiddleware<ExceptionHandlingMiddleware>();
         app.MapControllers();
     }
