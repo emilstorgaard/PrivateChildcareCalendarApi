@@ -192,6 +192,8 @@ public class CalendarEventService
 
     private static CalendarEventDto BuildStatusEvent(Child child, DateTime date, ChildDayStatus status)
     {
+        var baseSortOrder = 100 + int.Parse(child.BirthDate.ToString("yyyyMMdd"));
+
         return status.StatusType switch
         {
             ChildDayStatusType.Syg => new CalendarEventDto
@@ -200,7 +202,7 @@ public class CalendarEventService
                 Start = date,
                 ClassName = "event-sick",
                 Note = status.Note ?? string.Empty,
-                SortOrder = 950000000
+                SortOrder = baseSortOrder
             },
             ChildDayStatusType.Fridag => new CalendarEventDto
             {
@@ -208,14 +210,14 @@ public class CalendarEventService
                 Start = date,
                 ClassName = "event-dayoff",
                 Note = status.Note ?? string.Empty,
-                SortOrder = 955000000
+                SortOrder = baseSortOrder
             },
             _ => new CalendarEventDto
             {
                 Title = child.Name,
                 Start = date,
                 ClassName = "event-child",
-                SortOrder = 100 + int.Parse(child.BirthDate.ToString("yyyyMMdd"))
+                SortOrder = baseSortOrder
             }
         };
     }
