@@ -1,0 +1,42 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+	<PropertyGroup>
+		<TargetFramework>net10.0</TargetFramework>
+		<Nullable>enable</Nullable>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<UserSecretsId>403f961e-7958-42ec-bb9e-b111b6ebe18d</UserSecretsId>
+		<DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+		<DockerfileContext>.</DockerfileContext>
+	</PropertyGroup>
+
+	<ItemGroup>
+	  <Content Remove="appsettings.Production.json" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Compile Include="appsettings.Production.json" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="10.0.9" />
+		<PackageReference Include="Microsoft.Data.Sqlite" Version="10.0.9" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="10.0.9" />
+		<PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.23.0" />
+		<PackageReference Include="Scalar.AspNetCore" Version="2.16.3" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<None Update="privatpasning.db">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</None>
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Folder Include="Backups\" />
+	  <Folder Include="Models\" />
+	  <Folder Include="Data\" />
+	  <Folder Include="Infrastructure\" />
+	  <Folder Include="Services\" />
+	</ItemGroup>
+
+</Project>
