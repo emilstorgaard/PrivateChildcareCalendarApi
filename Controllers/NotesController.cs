@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using PrivateChildcareCalendarApi.Dtos;
-using PrivatPasningKalender.Data;
-using PrivatPasningKalender.Models;
+using PrivateChildcareCalendarApi.Data;
+using PrivateChildcareCalendarApi.Models;
 using System;
 
 namespace PrivateChildcareCalendarApi.Controllers;

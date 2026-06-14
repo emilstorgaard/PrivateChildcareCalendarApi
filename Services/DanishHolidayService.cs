@@ -1,4 +1,4 @@
-namespace PrivatPasningKalender.Services;
+namespace PrivateChildcareCalendarApi.Services;
 
 public static class DanishHolidayService
 {

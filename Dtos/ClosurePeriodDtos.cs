@@ -1,4 +1,4 @@
-﻿using PrivatPasningKalender.Models;
+﻿using PrivateChildcareCalendarApi.Models;
 using System.ComponentModel.DataAnnotations;
 
 namespace PrivateChildcareCalendarApi.Dtos;

@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using PrivatPasningKalender.Services;
+using PrivateChildcareCalendarApi.Services;
 
 namespace PrivateChildcareCalendarApi.Controllers;
 

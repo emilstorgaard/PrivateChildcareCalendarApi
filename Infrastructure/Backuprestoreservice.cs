@@ -1,8 +1,8 @@
 ﻿using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
-using PrivatPasningKalender.Data;
+using PrivateChildcareCalendarApi.Data;
 
-namespace PrivatPasningKalender.Infrastructure;
+namespace PrivateChildcareCalendarApi.Infrastructure;
 
 public static class BackupRestoreService
 {

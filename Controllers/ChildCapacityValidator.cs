@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using PrivatPasningKalender.Data;
-using PrivatPasningKalender.Models;
+using PrivateChildcareCalendarApi.Data;
+using PrivateChildcareCalendarApi.Models;
 
 namespace PrivateChildcareCalendarApi.Controllers;
 

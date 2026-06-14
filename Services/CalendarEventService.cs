@@ -1,8 +1,8 @@
 using Microsoft.EntityFrameworkCore;
-using PrivatPasningKalender.Data;
-using PrivatPasningKalender.Models;
+using PrivateChildcareCalendarApi.Data;
+using PrivateChildcareCalendarApi.Models;
 
-namespace PrivatPasningKalender.Services;
+namespace PrivateChildcareCalendarApi.Services;
 
 public class CalendarEventService
 {

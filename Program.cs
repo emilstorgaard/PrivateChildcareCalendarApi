@@ -3,9 +3,9 @@ using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using PrivateChildcareCalendarApi.Controllers;
 using PrivateChildcareCalendarApi.Middleware;
-using PrivatPasningKalender.Data;
-using PrivatPasningKalender.Infrastructure;
-using PrivatPasningKalender.Services;
+using PrivateChildcareCalendarApi.Data;
+using PrivateChildcareCalendarApi.Infrastructure;
+using PrivateChildcareCalendarApi.Services;
 using Scalar.AspNetCore;
 using System.Text.Json.Serialization;
 

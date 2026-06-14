@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.Sqlite;
 using PrivateChildcareCalendarApi.Dtos;
-using PrivatPasningKalender.Data;
-using PrivatPasningKalender.Infrastructure;
+using PrivateChildcareCalendarApi.Data;
+using PrivateChildcareCalendarApi.Infrastructure;
 
 namespace PrivateChildcareCalendarApi.Controllers;
 

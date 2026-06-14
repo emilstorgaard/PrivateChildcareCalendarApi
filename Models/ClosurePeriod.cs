@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace PrivatPasningKalender.Models;
+namespace PrivateChildcareCalendarApi.Models;
 
 public enum ClosurePeriodType
 {
