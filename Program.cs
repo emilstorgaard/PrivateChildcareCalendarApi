@@ -99,7 +99,7 @@ public class Program
         app.UseHsts();
         app.UseHttpsRedirection();
         app.UseRouting();
-        app.UseCors("AllowAllOrigins");
+        app.UseCors("AllowFrontend");
         app.UseMiddleware<ExceptionHandlingMiddleware>();
         app.UseRateLimiter();
         app.MapControllers();
