@@ -24,7 +24,7 @@ public class DayStatusResponse
 {
     public int Id { get; set; }
     public int ChildId { get; set; }
-    public string? ChildName { get; set; }   // fladt — undgår cirkulær reference
+    public string? ChildName { get; set; }
     public DateTime Date { get; set; }
     public DateTime EndDate { get; set; }
     public ChildDayStatusType StatusType { get; set; }

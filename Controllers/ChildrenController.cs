@@ -73,7 +73,6 @@ public class ChildrenController : ControllerBase
         var child = await _db.Children.FindAsync(id);
         if (child == null) return NotFound();
 
-        // Anvend ændringer på et midlertidigt objekt til validering
         var candidate = new Child
         {
             Id = id,
@@ -117,7 +116,7 @@ public class ChildrenController : ControllerBase
         StartDate = child.StartDate,
         EndDate = child.EndDate,
         Note = child.Note,
-        FreeDate = child.FreeDate,   // beregnet i modellen
-        IsFuture = child.IsFuture     // beregnet i modellen
+        FreeDate = child.FreeDate,
+        IsFuture = child.IsFuture
     };
 }

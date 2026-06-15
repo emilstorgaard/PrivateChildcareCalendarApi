@@ -71,7 +71,7 @@ public static class DatabaseInitializer
         }
         catch (Exception ex)
         {
-  
+
         }
 
         db.Database.ExecuteSqlRaw(
@@ -84,7 +84,7 @@ public static class DatabaseInitializer
         }
         catch (Exception ex)
         {
-  
+
         }
 
         var childrenWithoutEndDate = db.Children

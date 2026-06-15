@@ -17,7 +17,6 @@ public class DashboardController : ControllerBase
     {
         var today = DateTime.Today;
 
-        // Kør alle queries parallelt i stedet for sekventielt
         var activeNowTask = _db.Children.CountAsync(c => c.StartDate <= today && c.EndDate > today);
         var futureChildrenTask = _db.Children.CountAsync(c => c.StartDate > today);
         var waitingCountTask = _db.WaitingList.CountAsync();

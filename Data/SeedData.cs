@@ -2,6 +2,8 @@ using PrivateChildcareCalendarApi.Models;
 
 namespace PrivateChildcareCalendarApi.Data;
 
+// TODO: do not use seed data
+
 public static class SeedData
 {
     public static void EnsureSeedData(AppDbContext db)

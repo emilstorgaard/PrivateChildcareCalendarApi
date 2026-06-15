@@ -18,7 +18,6 @@ public class CalendarController : ControllerBase
         var rangeStart = (start ?? DateTime.Today.AddMonths(-1)).Date;
         var rangeEnd = (end ?? DateTime.Today.AddMonths(2)).Date.AddDays(1);
 
-        // Begræns til maks 2 år ad gangen
         if ((rangeEnd - rangeStart).TotalDays > 730)
             return BadRequest(new { error = "Datointerval må ikke overstige 2 år." });
 

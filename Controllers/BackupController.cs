@@ -22,7 +22,6 @@ public class BackupController : ControllerBase
         _db = db;
     }
 
-    // GET /api/backup  → liste over backups
     [HttpGet]
     public ActionResult<IEnumerable<BackupFileResponse>> GetAll()
     {
@@ -43,7 +42,6 @@ public class BackupController : ControllerBase
         return Ok(files);
     }
 
-    // POST /api/backup  → opret ny backup
     [HttpPost]
     public ActionResult<BackupFileResponse> CreateBackup()
     {
@@ -72,7 +70,6 @@ public class BackupController : ControllerBase
         });
     }
 
-    // GET /api/backup/{fileName}/download
     [HttpGet("{fileName}/download")]
     public IActionResult Download(string fileName)
     {
@@ -83,12 +80,10 @@ public class BackupController : ControllerBase
         if (!System.IO.File.Exists(path))
             return NotFound(new { error = "Filen blev ikke fundet." });
 
-        // Undgå at loade hele filen i memory
         var stream = new FileStream(path, FileMode.Open, FileAccess.Read);
         return File(stream, "application/octet-stream", fileName);
     }
 
-    // POST /api/backup/upload  → gemmer uploadet fil i backup-mappen
     [HttpPost("upload")]
     public async Task<IActionResult> Upload(IFormFile backupFile)
     {
@@ -101,10 +96,8 @@ public class BackupController : ControllerBase
         var folder = GetBackupFolder();
         Directory.CreateDirectory(folder);
 
-        // Gør filnavnet sikkert (kun selve filnavnet, ingen sti)
         var safeName = Path.GetFileName(backupFile.FileName);
 
-        // Undgå at overskrive eksisterende ved at tilføje timestamp hvis nødvendigt
         var targetPath = Path.Combine(folder, safeName);
         if (System.IO.File.Exists(targetPath))
         {
@@ -128,7 +121,6 @@ public class BackupController : ControllerBase
         });
     }
 
-    // DELETE /api/backup/{fileName}
     [HttpDelete("{fileName}")]
     public IActionResult Delete(string fileName)
     {
@@ -142,7 +134,6 @@ public class BackupController : ControllerBase
         return NoContent();
     }
 
-    // POST /api/backup/{fileName}/restore
     [HttpPost("{fileName}/restore")]
     [EnableRateLimiting("backup")]
     public IActionResult RestoreFromBackup(string fileName)

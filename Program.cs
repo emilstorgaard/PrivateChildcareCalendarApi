@@ -43,7 +43,6 @@ public class Program
         builder.Services.AddControllers()
             .AddJsonOptions(options =>
             {
-                // Undgå cirkulære referencer (f.eks. ChildDayStatus.Child)
                 options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
             });
 

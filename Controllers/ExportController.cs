@@ -28,7 +28,6 @@ public class ExportController : ControllerBase
         using var workbook = new XLWorkbook();
         var ws = workbook.Worksheets.Add($"Årsoversigt {year}");
 
-        // --- Kolonneoverskrifter ---
         ws.Cell(1, 1).Value = "Dato";
         ws.Cell(1, 2).Value = "Uge";
         ws.Cell(1, 3).Value = "Ugedag";
@@ -39,7 +38,6 @@ public class ExportController : ControllerBase
         headerRow.Style.Fill.BackgroundColor = XLColor.FromHtml("#16a34a");
         headerRow.Style.Font.FontColor = XLColor.White;
 
-        // --- Data ---
         var row = 2;
         for (var date = start; date < end; date = date.AddDays(1))
         {
@@ -60,7 +58,6 @@ public class ExportController : ControllerBase
             ws.Cell(row, 3).Value = culture.DateTimeFormat.GetDayName(date.DayOfWeek);
             ws.Cell(row, 4).Value = string.Join(", ", dayEvents);
 
-            // Grå baggrund på weekender
             if (isWeekend)
             {
                 ws.Row(row).Style.Fill.BackgroundColor = XLColor.FromHtml("#f4f2ee");
@@ -70,17 +67,14 @@ public class ExportController : ControllerBase
             row++;
         }
 
-        // --- Kolonnebredder ---
         ws.Column(1).Width = 14;
         ws.Column(2).Width = 6;
         ws.Column(3).Width = 12;
         ws.Column(4).Width = 60;
         ws.Column(4).Style.Alignment.WrapText = true;
 
-        // --- Frys overskriftsrækken ---
         ws.SheetView.FreezeRows(1);
 
-        // --- Auto-filter ---
         ws.RangeUsed()?.SetAutoFilter();
 
         using var stream = new MemoryStream();

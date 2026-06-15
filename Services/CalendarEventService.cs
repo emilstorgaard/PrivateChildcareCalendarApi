@@ -166,7 +166,6 @@ public class CalendarEventService
         var from = child.StartDate.Date > rangeStart ? child.StartDate.Date : rangeStart;
         var to = child.EndDate.Date < rangeEnd ? child.EndDate.Date : rangeEnd;
 
-        // Beregn child-specifik sortOrder én gang i stedet for pr. dag
         var childSortOrder = SortOrders.ChildBase + int.Parse(child.BirthDate.ToString("yyyyMMdd"));
 
         for (var date = from; date < to; date = date.AddDays(1))
