@@ -74,11 +74,12 @@ public class Program
         {
             options.AddPolicy("AllowFrontend", policy =>
             {
-                var origins = builder.Configuration
-                    .GetSection("AllowedOrigins")
-                    .Get<string[]>() ?? [];
+                //var origins = builder.Configuration
+                //    .GetSection("AllowedOrigins")
+                //    .Get<string[]>() ?? [];
 
-                policy.WithOrigins(origins)
+                //policy.WithOrigins(origins)
+                policy.AllowAnyOrigin()
                       .AllowAnyMethod()
                       .AllowAnyHeader();
             });
