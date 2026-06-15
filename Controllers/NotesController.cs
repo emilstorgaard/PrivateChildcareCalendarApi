@@ -19,6 +19,7 @@ public class NotesController : ControllerBase
     public async Task<ActionResult<IEnumerable<CalendarNote>>> GetAll()
     {
         var notes = await _db.CalendarNotes
+            .AsNoTracking()
             .OrderByDescending(x => x.Date)
             .ToListAsync();
 
@@ -28,7 +29,7 @@ public class NotesController : ControllerBase
     [HttpGet("{id:int}")]
     public async Task<ActionResult<CalendarNote>> GetById(int id)
     {
-        var note = await _db.CalendarNotes.FindAsync(id);
+        var note = await _db.CalendarNotes.AsNoTracking().FirstOrDefaultAsync(x => x.Id == id);
         if (note == null) return NotFound();
         return Ok(note);
     }

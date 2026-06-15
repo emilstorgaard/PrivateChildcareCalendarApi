@@ -18,6 +18,7 @@ public class WaitingListController : ControllerBase
     public async Task<ActionResult<IEnumerable<WaitingListEntry>>> GetAll()
     {
         var entries = await _db.WaitingList
+            .AsNoTracking()
             .OrderBy(w => w.WantedStartDate)
             .ToListAsync();
 
@@ -27,7 +28,7 @@ public class WaitingListController : ControllerBase
     [HttpGet("{id:int}")]
     public async Task<ActionResult<WaitingListEntry>> GetById(int id)
     {
-        var entry = await _db.WaitingList.FindAsync(id);
+        var entry = await _db.WaitingList.AsNoTracking().FirstOrDefaultAsync(x => x.Id == id);
         if (entry == null) return NotFound();
         return Ok(entry);
     }

@@ -18,6 +18,7 @@ public class DayStatusController : ControllerBase
     public async Task<ActionResult<IEnumerable<DayStatusResponse>>> GetAll()
     {
         var list = await _db.ChildDayStatuses
+            .AsNoTracking()
             .Include(x => x.Child)
             .OrderByDescending(x => x.Date)
             .ThenByDescending(x => x.EndDate)
@@ -40,6 +41,7 @@ public class DayStatusController : ControllerBase
     public async Task<ActionResult<DayStatusResponse>> GetById(int id)
     {
         var item = await _db.ChildDayStatuses
+            .AsNoTracking()
             .Include(x => x.Child)
             .Where(x => x.Id == id)
             .Select(x => new DayStatusResponse

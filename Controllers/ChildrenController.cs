@@ -23,9 +23,6 @@ public class ChildrenController : ControllerBase
     [HttpGet]
     public async Task<ActionResult<IEnumerable<ChildResponse>>> GetAll()
     {
-        // TODO: Brug AsNoTracking overalt i read-only endpoints — allerede gjort for de fleste,
-        // men tjek alle controllere systematisk.
-
         var children = await _db.Children.AsNoTracking().ToListAsync();
 
         var result = children

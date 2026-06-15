@@ -17,9 +17,9 @@ public class DashboardController : ControllerBase
     {
         var today = DateTime.Today;
 
-        var activeNowTask = _db.Children.CountAsync(c => c.StartDate <= today && c.EndDate > today);
-        var futureChildrenTask = _db.Children.CountAsync(c => c.StartDate > today);
-        var waitingCountTask = _db.WaitingList.CountAsync();
+        var activeNowTask = _db.Children.AsNoTracking().CountAsync(c => c.StartDate <= today && c.EndDate > today);
+        var futureChildrenTask = _db.Children.AsNoTracking().CountAsync(c => c.StartDate > today);
+        var waitingCountTask = _db.WaitingList.AsNoTracking().CountAsync();
         var settingsTask = _db.SystemSettings.AsNoTracking().FirstOrDefaultAsync();
         var nextFreeTask = _db.Children
                                     .AsNoTracking()

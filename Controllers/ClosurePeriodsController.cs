@@ -18,6 +18,7 @@ public class ClosurePeriodsController : ControllerBase
     public async Task<ActionResult<IEnumerable<ClosurePeriod>>> GetAll()
     {
         var list = await _db.ClosurePeriods
+            .AsNoTracking()
             .OrderByDescending(x => x.StartDate)
             .ToListAsync();
 
@@ -27,7 +28,7 @@ public class ClosurePeriodsController : ControllerBase
     [HttpGet("{id:int}")]
     public async Task<ActionResult<ClosurePeriod>> GetById(int id)
     {
-        var item = await _db.ClosurePeriods.FindAsync(id);
+        var item = await _db.ClosurePeriods.AsNoTracking().FirstOrDefaultAsync(x => x.Id == id);
         if (item == null) return NotFound();
         return Ok(item);
     }
