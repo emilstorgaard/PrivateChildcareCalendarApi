@@ -10,7 +10,6 @@ namespace PrivateChildcareCalendarApi.Controllers;
 public class DashboardController : ControllerBase
 {
     private readonly AppDbContext _db;
-
     public DashboardController(AppDbContext db) => _db = db;
 
     [HttpGet]
@@ -18,26 +17,31 @@ public class DashboardController : ControllerBase
     {
         var today = DateTime.Today;
 
-        var children = await _db.Children.AsNoTracking().ToListAsync();
-        var settings = await _db.SystemSettings.AsNoTracking().FirstOrDefaultAsync();
-        var waitingCount = await _db.WaitingList.CountAsync();
+        // Kør alle queries parallelt i stedet for sekventielt
+        var activeNowTask = _db.Children.CountAsync(c => c.StartDate <= today && c.EndDate > today);
+        var futureChildrenTask = _db.Children.CountAsync(c => c.StartDate > today);
+        var waitingCountTask = _db.WaitingList.CountAsync();
+        var settingsTask = _db.SystemSettings.AsNoTracking().FirstOrDefaultAsync();
+        var nextFreeTask = _db.Children
+                                    .AsNoTracking()
+                                    .Where(c => c.EndDate >= today)
+                                    .OrderBy(c => c.EndDate)
+                                    .Select(c => new NextFreeDto
+                                    {
+                                        Name = c.Name,
+                                        EndDate = c.EndDate
+                                    })
+                                    .FirstOrDefaultAsync();
 
-        var nextFree = children
-            .Where(c => c.EndDate.Date >= today)
-            .OrderBy(c => c.EndDate)
-            .FirstOrDefault();
+        await Task.WhenAll(activeNowTask, futureChildrenTask, waitingCountTask, settingsTask, nextFreeTask);
 
         var response = new DashboardResponse
         {
-            TotalPlaces = settings?.MaxChildren ?? 5,
-            ActiveNow = children.Count(c => c.StartDate.Date <= today && c.EndDate.Date > today),
-            FutureChildren = children.Count(c => c.StartDate.Date > today),
-            WaitingCount = waitingCount,
-            NextFree = nextFree == null ? null : new NextFreeDto
-            {
-                Name = nextFree.Name,
-                EndDate = nextFree.EndDate
-            }
+            TotalPlaces = (await settingsTask)?.MaxChildren ?? 5,
+            ActiveNow = await activeNowTask,
+            FutureChildren = await futureChildrenTask,
+            WaitingCount = await waitingCountTask,
+            NextFree = await nextFreeTask
         };
 
         return Ok(response);

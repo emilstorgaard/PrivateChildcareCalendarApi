@@ -79,14 +79,13 @@ public class BackupController : ControllerBase
         if (!IsValidFileName(fileName))
             return BadRequest(new { error = "Ugyldigt filnavn." });
 
-        var folder = GetBackupFolder();
-        var path = Path.Combine(folder, fileName);
-
+        var path = Path.Combine(GetBackupFolder(), fileName);
         if (!System.IO.File.Exists(path))
-            return NotFound(new { error = $"Filen blev ikke fundet: {path}" });
+            return NotFound(new { error = "Filen blev ikke fundet." });
 
-        var bytes = System.IO.File.ReadAllBytes(path);
-        return File(bytes, "application/octet-stream", fileName);
+        // Undgå at loade hele filen i memory
+        var stream = new FileStream(path, FileMode.Open, FileAccess.Read);
+        return File(stream, "application/octet-stream", fileName);
     }
 
     // POST /api/backup/upload  → gemmer uploadet fil i backup-mappen

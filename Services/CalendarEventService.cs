@@ -17,11 +17,11 @@ public class CalendarEventService
 
         var data = await LoadDataAsync(rangeStart, rangeEnd);
         var events = new List<CalendarEventDto>();
-        var holidayCache = new Dictionary<int, Dictionary<DateTime, string>>(); // <-- opret her
+        var holidayCache = new Dictionary<int, Dictionary<DateTime, string>>();
 
         events.AddRange(BuildHolidayEvents(rangeStart, rangeEnd));
         events.AddRange(BuildClosureEvents(data.Closures, rangeStart, rangeEnd));
-        events.AddRange(BuildChildEvents(data.Children, data.Statuses, data.Closures, rangeStart, rangeEnd, holidayCache)); // <-- send med
+        events.AddRange(BuildChildEvents(data.Children, data.Statuses, data.Closures, rangeStart, rangeEnd, holidayCache));
         events.AddRange(BuildWaitingListEvents(data.Waiting));
         events.AddRange(BuildNoteEvents(data.Notes));
 
@@ -66,7 +66,7 @@ public class CalendarEventService
                     Start = holiday.Key,
                     ClassName = "event-holiday",
                     Display = "block",
-                    SortOrder = 20
+                    SortOrder = SortOrders.Holiday
                 };
             }
         }
@@ -93,7 +93,7 @@ public class CalendarEventService
                     ClassName = className,
                     Display = "block",
                     Note = closure.Note ?? string.Empty,
-                    SortOrder = 15
+                    SortOrder = SortOrders.Closure
                 };
             }
         }
@@ -105,7 +105,7 @@ public class CalendarEventService
         List<ClosurePeriod> closures,
         DateTime rangeStart,
         DateTime rangeEnd,
-        Dictionary<int, Dictionary<DateTime, string>> holidayCache) // <-- tilføj
+        Dictionary<int, Dictionary<DateTime, string>> holidayCache)
     {
         foreach (var child in children)
         {
@@ -114,18 +114,18 @@ public class CalendarEventService
                 Title = $"{child.Name} starter",
                 Start = child.StartDate,
                 ClassName = "event-start",
-                SortOrder = 700000000
+                SortOrder = SortOrders.ChildStart
             };
             yield return new CalendarEventDto
             {
                 Title = $"{child.Name} stopper / plads ledig",
                 Start = child.EndDate,
                 ClassName = "event-free",
-                SortOrder = 710000000
+                SortOrder = SortOrders.ChildEnd
             };
             foreach (var e in BuildBirthdayEvents(child, rangeStart, rangeEnd))
                 yield return e;
-            foreach (var e in BuildAttendanceEvents(child, statuses, closures, rangeStart, rangeEnd, holidayCache)) // <-- videregiv
+            foreach (var e in BuildAttendanceEvents(child, statuses, closures, rangeStart, rangeEnd, holidayCache))
                 yield return e;
         }
     }
@@ -150,7 +150,7 @@ public class CalendarEventService
                 ClassName = "event-birthday",
                 Display = "block",
                 Note = $"{child.Name} har fødselsdag og bliver {age} år.",
-                SortOrder = 150000000
+                SortOrder = SortOrders.Birthday
             };
         }
     }
@@ -161,10 +161,13 @@ public class CalendarEventService
         List<ClosurePeriod> closures,
         DateTime rangeStart,
         DateTime rangeEnd,
-        Dictionary<int, Dictionary<DateTime, string>> holidayCache) // <-- ny parameter
+        Dictionary<int, Dictionary<DateTime, string>> holidayCache)
     {
         var from = child.StartDate.Date > rangeStart ? child.StartDate.Date : rangeStart;
         var to = child.EndDate.Date < rangeEnd ? child.EndDate.Date : rangeEnd;
+
+        // Beregn child-specifik sortOrder én gang i stedet for pr. dag
+        var childSortOrder = SortOrders.ChildBase + int.Parse(child.BirthDate.ToString("yyyyMMdd"));
 
         for (var date = from; date < to; date = date.AddDays(1))
         {
@@ -182,7 +185,7 @@ public class CalendarEventService
                 x => x.ChildId == child.Id && x.Date.Date <= date && x.EndDate.Date >= date);
             if (status != null)
             {
-                yield return BuildStatusEvent(child, date, status);
+                yield return BuildStatusEvent(child, date, status, childSortOrder);
                 continue;
             }
 
@@ -191,15 +194,14 @@ public class CalendarEventService
                 Title = child.Name,
                 Start = date,
                 ClassName = "event-child",
-                SortOrder = 100 + int.Parse(child.BirthDate.ToString("yyyyMMdd"))
+                SortOrder = childSortOrder
             };
         }
     }
 
-    private static CalendarEventDto BuildStatusEvent(Child child, DateTime date, ChildDayStatus status)
+    private static CalendarEventDto BuildStatusEvent(
+        Child child, DateTime date, ChildDayStatus status, int sortOrder)
     {
-        var baseSortOrder = 100 + int.Parse(child.BirthDate.ToString("yyyyMMdd"));
-
         return status.StatusType switch
         {
             ChildDayStatusType.Syg => new CalendarEventDto
@@ -208,7 +210,7 @@ public class CalendarEventService
                 Start = date,
                 ClassName = "event-sick",
                 Note = status.Note ?? string.Empty,
-                SortOrder = baseSortOrder
+                SortOrder = sortOrder
             },
             ChildDayStatusType.Fridag => new CalendarEventDto
             {
@@ -216,14 +218,14 @@ public class CalendarEventService
                 Start = date,
                 ClassName = "event-dayoff",
                 Note = status.Note ?? string.Empty,
-                SortOrder = baseSortOrder
+                SortOrder = sortOrder
             },
             _ => new CalendarEventDto
             {
                 Title = child.Name,
                 Start = date,
                 ClassName = "event-child",
-                SortOrder = baseSortOrder
+                SortOrder = sortOrder
             }
         };
     }
@@ -237,7 +239,7 @@ public class CalendarEventService
                 Title = $"Venteliste: {x.ChildName}",
                 Start = x.WantedStartDate!.Value,
                 ClassName = "event-waiting",
-                SortOrder = 850000000
+                SortOrder = SortOrders.WaitingList
             });
     }
 
@@ -249,8 +251,20 @@ public class CalendarEventService
             Start = note.Date,
             ClassName = "event-note",
             Note = note.Note ?? string.Empty,
-            SortOrder = 900000000
+            SortOrder = SortOrders.Note
         });
+    }
+
+    private static class SortOrders
+    {
+        public const int Holiday = 20;
+        public const int Closure = 15;
+        public const int ChildBase = 100;
+        public const int Birthday = 150_000_000;
+        public const int ChildStart = 700_000_000;
+        public const int ChildEnd = 710_000_000;
+        public const int WaitingList = 850_000_000;
+        public const int Note = 900_000_000;
     }
 
     private sealed class CalendarData
