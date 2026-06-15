@@ -4,6 +4,8 @@ using PrivateChildcareCalendarApi.Models;
 
 namespace PrivateChildcareCalendarApi.Infrastructure;
 
+// TODO: EF Core Migrations
+
 public static class DatabaseInitializer
 {
     public static void Initialize(AppDbContext db)

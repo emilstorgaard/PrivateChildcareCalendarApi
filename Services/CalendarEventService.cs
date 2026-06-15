@@ -17,10 +17,11 @@ public class CalendarEventService
 
         var data = await LoadDataAsync(rangeStart, rangeEnd);
         var events = new List<CalendarEventDto>();
+        var holidayCache = new Dictionary<int, Dictionary<DateTime, string>>(); // <-- opret her
 
         events.AddRange(BuildHolidayEvents(rangeStart, rangeEnd));
         events.AddRange(BuildClosureEvents(data.Closures, rangeStart, rangeEnd));
-        events.AddRange(BuildChildEvents(data.Children, data.Statuses, data.Closures, rangeStart, rangeEnd));
+        events.AddRange(BuildChildEvents(data.Children, data.Statuses, data.Closures, rangeStart, rangeEnd, holidayCache)); // <-- send med
         events.AddRange(BuildWaitingListEvents(data.Waiting));
         events.AddRange(BuildNoteEvents(data.Notes));
 
@@ -103,7 +104,8 @@ public class CalendarEventService
         List<ChildDayStatus> statuses,
         List<ClosurePeriod> closures,
         DateTime rangeStart,
-        DateTime rangeEnd)
+        DateTime rangeEnd,
+        Dictionary<int, Dictionary<DateTime, string>> holidayCache) // <-- tilføj
     {
         foreach (var child in children)
         {
@@ -114,7 +116,6 @@ public class CalendarEventService
                 ClassName = "event-start",
                 SortOrder = 700000000
             };
-
             yield return new CalendarEventDto
             {
                 Title = $"{child.Name} stopper / plads ledig",
@@ -122,11 +123,9 @@ public class CalendarEventService
                 ClassName = "event-free",
                 SortOrder = 710000000
             };
-
             foreach (var e in BuildBirthdayEvents(child, rangeStart, rangeEnd))
                 yield return e;
-
-            foreach (var e in BuildAttendanceEvents(child, statuses, closures, rangeStart, rangeEnd))
+            foreach (var e in BuildAttendanceEvents(child, statuses, closures, rangeStart, rangeEnd, holidayCache)) // <-- videregiv
                 yield return e;
         }
     }
@@ -161,7 +160,8 @@ public class CalendarEventService
         List<ChildDayStatus> statuses,
         List<ClosurePeriod> closures,
         DateTime rangeStart,
-        DateTime rangeEnd)
+        DateTime rangeEnd,
+        Dictionary<int, Dictionary<DateTime, string>> holidayCache) // <-- ny parameter
     {
         var from = child.StartDate.Date > rangeStart ? child.StartDate.Date : rangeStart;
         var to = child.EndDate.Date < rangeEnd ? child.EndDate.Date : rangeEnd;
@@ -169,7 +169,13 @@ public class CalendarEventService
         for (var date = from; date < to; date = date.AddDays(1))
         {
             if (date.DayOfWeek is DayOfWeek.Saturday or DayOfWeek.Sunday) continue;
-            if (DanishHolidayService.IsHoliday(date, out _)) continue;
+
+            if (!holidayCache.TryGetValue(date.Year, out var holidays))
+            {
+                holidays = DanishHolidayService.GetHolidays(date.Year);
+                holidayCache[date.Year] = holidays;
+            }
+            if (holidays.ContainsKey(date)) continue;
             if (closures.Any(x => x.StartDate.Date <= date && x.EndDate.Date >= date)) continue;
 
             var status = statuses.FirstOrDefault(

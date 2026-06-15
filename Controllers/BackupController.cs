@@ -1,7 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.Data.Sqlite;
-using PrivateChildcareCalendarApi.Dtos;
 using PrivateChildcareCalendarApi.Data;
+using PrivateChildcareCalendarApi.Dtos;
 using PrivateChildcareCalendarApi.Infrastructure;
 
 namespace PrivateChildcareCalendarApi.Controllers;
@@ -144,6 +145,7 @@ public class BackupController : ControllerBase
 
     // POST /api/backup/{fileName}/restore
     [HttpPost("{fileName}/restore")]
+    [EnableRateLimiting("backup")]
     public IActionResult RestoreFromBackup(string fileName)
     {
         if (!IsValidFileName(fileName))

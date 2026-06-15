@@ -2,7 +2,7 @@
 using PrivateChildcareCalendarApi.Data;
 using PrivateChildcareCalendarApi.Models;
 
-namespace PrivateChildcareCalendarApi.Controllers;
+namespace PrivateChildcareCalendarApi.Services;
 
 public class ChildCapacityValidator
 {

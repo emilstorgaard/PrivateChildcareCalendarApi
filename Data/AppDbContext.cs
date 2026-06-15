@@ -17,5 +17,25 @@ public class AppDbContext : DbContext
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
+
+        modelBuilder.Entity<ChildDayStatus>(entity =>
+        {
+            entity.HasOne(x => x.Child)
+                  .WithMany()
+                  .HasForeignKey(x => x.ChildId)
+                  .OnDelete(DeleteBehavior.Cascade);
+
+            entity.HasIndex(x => x.ChildId);
+            entity.HasIndex(x => new { x.Date, x.EndDate });
+        });
+
+        modelBuilder.Entity<ClosurePeriod>()
+            .HasIndex(x => new { x.StartDate, x.EndDate });
+
+        modelBuilder.Entity<CalendarNote>()
+            .HasIndex(x => x.Date);
+
+        modelBuilder.Entity<SystemSetting>()
+            .HasData(new SystemSetting { Id = 1, MaxChildren = 5 });
     }
 }

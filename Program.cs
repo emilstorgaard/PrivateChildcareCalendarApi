@@ -1,10 +1,10 @@
 
+using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
-using PrivateChildcareCalendarApi.Controllers;
-using PrivateChildcareCalendarApi.Middleware;
 using PrivateChildcareCalendarApi.Data;
 using PrivateChildcareCalendarApi.Infrastructure;
+using PrivateChildcareCalendarApi.Middleware;
 using PrivateChildcareCalendarApi.Services;
 using Scalar.AspNetCore;
 using System.Text.Json.Serialization;
@@ -57,15 +57,28 @@ public class Program
 
         builder.Services.AddScoped<ChildCapacityValidator>();
         builder.Services.AddScoped<CalendarEventService>();
+
+        builder.Services.AddRateLimiter(options =>
+        {
+            options.AddFixedWindowLimiter("backup", o =>
+            {
+                o.Window = TimeSpan.FromMinutes(1);
+                o.PermitLimit = 5;
+            });
+        });
     }
 
     public static void ConfigureCors(WebApplicationBuilder builder)
     {
         builder.Services.AddCors(options =>
         {
-            options.AddPolicy("AllowAllOrigins", policy =>
+            options.AddPolicy("AllowFrontend", policy =>
             {
-                policy.AllowAnyOrigin()
+                var origins = builder.Configuration
+                    .GetSection("AllowedOrigins")
+                    .Get<string[]>() ?? [];
+
+                policy.WithOrigins(origins)
                       .AllowAnyMethod()
                       .AllowAnyHeader();
             });
@@ -84,10 +97,11 @@ public class Program
         }
 
         app.UseHsts();
-        app.UseCors("AllowAllOrigins");
         app.UseHttpsRedirection();
         app.UseRouting();
+        app.UseCors("AllowAllOrigins");
         app.UseMiddleware<ExceptionHandlingMiddleware>();
+        app.UseRateLimiter();
         app.MapControllers();
     }
 
