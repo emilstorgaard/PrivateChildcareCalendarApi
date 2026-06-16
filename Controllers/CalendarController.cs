@@ -32,7 +32,7 @@ public class CalendarController : ControllerBase
             display = string.IsNullOrWhiteSpace(e.Display) ? null : e.Display,
             allDay = e.AllDay,
             sortOrder = e.SortOrder,
-            extendedProps = new { note = e.Note }
+            extendedProps = new { note = e.Note, id = e.Id }
         }));
     }
 }

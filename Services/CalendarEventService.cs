@@ -88,6 +88,7 @@ public class CalendarEventService
             {
                 yield return new CalendarEventDto
                 {
+                    Id = closure.Id,
                     Title = closure.Title,
                     Start = date,
                     ClassName = className,
@@ -111,6 +112,7 @@ public class CalendarEventService
         {
             yield return new CalendarEventDto
             {
+                Id = child.Id,
                 Title = $"{child.Name} starter",
                 Start = child.StartDate,
                 ClassName = "event-start",
@@ -118,6 +120,7 @@ public class CalendarEventService
             };
             yield return new CalendarEventDto
             {
+                Id = child.Id,
                 Title = $"{child.Name} stopper / plads ledig",
                 Start = child.EndDate,
                 ClassName = "event-free",
@@ -145,6 +148,7 @@ public class CalendarEventService
             var age = year - child.BirthDate.Year;
             yield return new CalendarEventDto
             {
+                Id = child.Id,
                 Title = $"🇩🇰 {child.Name} {age} år",
                 Start = birthday,
                 ClassName = "event-birthday",
@@ -190,6 +194,7 @@ public class CalendarEventService
 
             yield return new CalendarEventDto
             {
+                Id = child.Id,
                 Title = child.Name,
                 Start = date,
                 ClassName = "event-child",
@@ -205,6 +210,7 @@ public class CalendarEventService
         {
             ChildDayStatusType.Syg => new CalendarEventDto
             {
+                Id = status.Id,
                 Title = $"{child.Name} syg",
                 Start = date,
                 ClassName = "event-sick",
@@ -213,6 +219,7 @@ public class CalendarEventService
             },
             ChildDayStatusType.Fridag => new CalendarEventDto
             {
+                Id = status.Id,
                 Title = $"{child.Name} fridag",
                 Start = date,
                 ClassName = "event-dayoff",
@@ -221,6 +228,7 @@ public class CalendarEventService
             },
             _ => new CalendarEventDto
             {
+                Id = status.Id,
                 Title = child.Name,
                 Start = date,
                 ClassName = "event-child",
@@ -235,6 +243,7 @@ public class CalendarEventService
             .Where(x => x.WantedStartDate.HasValue)
             .Select(x => new CalendarEventDto
             {
+                Id = x.Id,
                 Title = $"Venteliste: {x.ChildName}",
                 Start = x.WantedStartDate!.Value,
                 ClassName = "event-waiting",
@@ -246,6 +255,7 @@ public class CalendarEventService
     {
         return notes.Select(note => new CalendarEventDto
         {
+            Id = note.Id,
             Title = note.Title,
             Start = note.Date,
             ClassName = "event-note",
