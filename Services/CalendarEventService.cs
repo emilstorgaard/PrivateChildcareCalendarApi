@@ -121,7 +121,7 @@ public class CalendarEventService
             yield return new CalendarEventDto
             {
                 Id = child.Id,
-                Title = $"{child.Name} stopper / plads ledig",
+                Title = $"{child.Name} stopper",
                 Start = child.EndDate,
                 ClassName = "event-free",
                 SortOrder = SortOrders.ChildEnd
