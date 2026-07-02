@@ -121,9 +121,9 @@ public class CalendarEventService
             yield return new CalendarEventDto
             {
                 Id = child.Id,
-                Title = $"{child.Name} stopper",
+                Title = $"{child.Name} sidste dag",
                 Start = child.EndDate,
-                ClassName = "event-free",
+                ClassName = "event-child-last-day",
                 SortOrder = SortOrders.ChildEnd
             };
             foreach (var e in BuildBirthdayEvents(child, rangeStart, rangeEnd))
