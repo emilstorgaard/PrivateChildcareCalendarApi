@@ -11,4 +11,5 @@ public class CalendarEventDto
     public bool AllDay { get; set; } = true;
     public string Note { get; set; } = string.Empty;
     public int SortOrder { get; set; }
+    public DateTime? DateOfBirth { get; set; }
 }

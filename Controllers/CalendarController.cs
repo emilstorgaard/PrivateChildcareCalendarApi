@@ -23,16 +23,37 @@ public class CalendarController : ControllerBase
 
         var events = await _calendarEventService.GetEventsAsync(rangeStart, rangeEnd);
 
-        return Ok(events.Select(e => new
-        {
-            title = e.Title,
-            start = e.Start.ToString("yyyy-MM-dd"),
-            end = e.End?.ToString("yyyy-MM-dd"),
-            className = e.ClassName,
-            display = string.IsNullOrWhiteSpace(e.Display) ? null : e.Display,
-            allDay = e.AllDay,
-            sortOrder = e.SortOrder,
-            extendedProps = new { note = e.Note, id = e.Id }
+        return Ok(events.Select(e => {
+            int? ageInMonths = null;
+
+            if (e.DateOfBirth.HasValue)
+            {
+                int months = (e.Start.Year - e.DateOfBirth.Value.Year) * 12 + (e.Start.Month - e.DateOfBirth.Value.Month);
+
+                if (e.Start.Day < e.DateOfBirth.Value.Day)
+                {
+                    months--;
+                }
+
+                ageInMonths = Math.Max(0, months);
+            }
+
+            return new
+            {
+                title = e.Title,
+                start = e.Start.ToString("yyyy-MM-dd"),
+                end = e.End?.ToString("yyyy-MM-dd"),
+                className = e.ClassName,
+                display = string.IsNullOrWhiteSpace(e.Display) ? null : e.Display,
+                allDay = e.AllDay,
+                sortOrder = e.SortOrder,
+                extendedProps = new
+                {
+                    note = e.Note,
+                    id = e.Id,
+                    ageInMonths
+                }
+            };
         }));
     }
 }

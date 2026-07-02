@@ -116,7 +116,8 @@ public class CalendarEventService
                 Title = $"{child.Name} starter",
                 Start = child.StartDate,
                 ClassName = "event-start",
-                SortOrder = SortOrders.ChildStart
+                SortOrder = SortOrders.ChildStart,
+                DateOfBirth = child.BirthDate
             };
             yield return new CalendarEventDto
             {
@@ -124,7 +125,8 @@ public class CalendarEventService
                 Title = $"{child.Name} sidste dag",
                 Start = child.EndDate,
                 ClassName = "event-child-last-day",
-                SortOrder = SortOrders.ChildEnd
+                SortOrder = SortOrders.ChildEnd,
+                DateOfBirth = child.BirthDate
             };
             foreach (var e in BuildBirthdayEvents(child, rangeStart, rangeEnd))
                 yield return e;
@@ -154,7 +156,8 @@ public class CalendarEventService
                 ClassName = "event-birthday",
                 Display = "block",
                 Note = $"{child.Name} har fødselsdag og bliver {age} år.",
-                SortOrder = SortOrders.Birthday
+                SortOrder = SortOrders.Birthday,
+                DateOfBirth = child.BirthDate
             };
         }
     }
@@ -198,7 +201,8 @@ public class CalendarEventService
                 Title = child.Name,
                 Start = date,
                 ClassName = "event-child",
-                SortOrder = childSortOrder
+                SortOrder = childSortOrder,
+                DateOfBirth = child.BirthDate
             };
         }
     }
@@ -215,7 +219,8 @@ public class CalendarEventService
                 Start = date,
                 ClassName = "event-sick",
                 Note = status.Note ?? string.Empty,
-                SortOrder = sortOrder
+                SortOrder = sortOrder,
+                DateOfBirth = child.BirthDate
             },
             ChildDayStatusType.Fridag => new CalendarEventDto
             {
@@ -224,7 +229,8 @@ public class CalendarEventService
                 Start = date,
                 ClassName = "event-dayoff",
                 Note = status.Note ?? string.Empty,
-                SortOrder = sortOrder
+                SortOrder = sortOrder,
+                DateOfBirth = child.BirthDate
             },
             _ => new CalendarEventDto
             {
@@ -232,7 +238,8 @@ public class CalendarEventService
                 Title = child.Name,
                 Start = date,
                 ClassName = "event-child",
-                SortOrder = sortOrder
+                SortOrder = sortOrder,
+                DateOfBirth = child.BirthDate
             }
         };
     }
