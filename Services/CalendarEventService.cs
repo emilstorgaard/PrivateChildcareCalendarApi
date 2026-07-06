@@ -22,7 +22,6 @@ public class CalendarEventService
         events.AddRange(BuildHolidayEvents(rangeStart, rangeEnd));
         events.AddRange(BuildClosureEvents(data.Closures, rangeStart, rangeEnd));
         events.AddRange(BuildChildEvents(data.Children, data.Statuses, data.Closures, rangeStart, rangeEnd, holidayCache));
-        events.AddRange(BuildWaitingListEvents(data.Waiting));
         events.AddRange(BuildNoteEvents(data.Notes));
 
         return events
@@ -37,7 +36,6 @@ public class CalendarEventService
         return new CalendarData
         {
             Children = await _db.Children.AsNoTracking().ToListAsync(),
-            Waiting = await _db.WaitingList.AsNoTracking().ToListAsync(),
             Statuses = await _db.ChildDayStatuses
                             .Include(x => x.Child)
                             .AsNoTracking()
@@ -239,20 +237,6 @@ public class CalendarEventService
         };
     }
 
-    private static IEnumerable<CalendarEventDto> BuildWaitingListEvents(List<WaitingListEntry> waiting)
-    {
-        return waiting
-            .Where(x => x.WantedStartDate.HasValue)
-            .Select(x => new CalendarEventDto
-            {
-                Id = x.Id,
-                Title = $"Venteliste: {x.ChildName}",
-                Start = x.WantedStartDate!.Value,
-                ClassName = "event-waiting",
-                SortOrder = SortOrders.WaitingList
-            });
-    }
-
     private static IEnumerable<CalendarEventDto> BuildNoteEvents(List<CalendarNote> notes)
     {
         return notes.Select(note => new CalendarEventDto
@@ -274,14 +258,12 @@ public class CalendarEventService
         public const int Birthday = 150_000_000;
         public const int ChildStart = 700_000_000;
         public const int ChildEnd = 710_000_000;
-        public const int WaitingList = 850_000_000;
         public const int Note = 900_000_000;
     }
 
     private sealed class CalendarData
     {
         public List<Child> Children { get; init; } = [];
-        public List<WaitingListEntry> Waiting { get; init; } = [];
         public List<ChildDayStatus> Statuses { get; init; } = [];
         public List<CalendarNote> Notes { get; init; } = [];
         public List<ClosurePeriod> Closures { get; init; } = [];
