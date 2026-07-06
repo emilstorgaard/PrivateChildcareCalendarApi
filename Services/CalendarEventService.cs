@@ -117,7 +117,6 @@ public class CalendarEventService
                 Start = child.StartDate,
                 ClassName = "event-start",
                 SortOrder = SortOrders.ChildStart,
-                DateOfBirth = child.BirthDate
             };
             yield return new CalendarEventDto
             {
@@ -126,7 +125,6 @@ public class CalendarEventService
                 Start = child.EndDate,
                 ClassName = "event-child-last-day",
                 SortOrder = SortOrders.ChildEnd,
-                DateOfBirth = child.BirthDate
             };
             foreach (var e in BuildBirthdayEvents(child, rangeStart, rangeEnd))
                 yield return e;
@@ -157,7 +155,6 @@ public class CalendarEventService
                 Display = "block",
                 Note = $"{child.Name} har fødselsdag og bliver {age} år.",
                 SortOrder = SortOrders.Birthday,
-                DateOfBirth = child.BirthDate
             };
         }
     }
@@ -220,7 +217,6 @@ public class CalendarEventService
                 ClassName = "event-sick",
                 Note = status.Note ?? string.Empty,
                 SortOrder = sortOrder,
-                DateOfBirth = child.BirthDate
             },
             ChildDayStatusType.Fridag => new CalendarEventDto
             {
@@ -230,7 +226,6 @@ public class CalendarEventService
                 ClassName = "event-dayoff",
                 Note = status.Note ?? string.Empty,
                 SortOrder = sortOrder,
-                DateOfBirth = child.BirthDate
             },
             _ => new CalendarEventDto
             {
