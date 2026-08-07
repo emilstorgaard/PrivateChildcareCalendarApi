@@ -1,16 +1,18 @@
-version: "3.9"
-
 services:
   backend:
     container_name: private-childcare-calendar-api
     build:
       context: .
       dockerfile: ./Dockerfile
-    ports:
-      - '8083:8080'
     restart: unless-stopped
     volumes:
       - ./Database:/app/database
       - ./Backups:/app/backups
     environment:
       - ASPNETCORE_ENVIRONMENT=Production
+    networks:
+      - proxy-net
+
+networks:
+  proxy-net:
+    external: true
